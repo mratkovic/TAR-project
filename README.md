@@ -17,4 +17,6 @@ Moreover, for each profile you will also get a numerical rating for the followin
 Your second task will be to develop regression models that predict this information for a
 new profile. You should experiment with different machine learning algorithms and
 features to determine what works best for each subtask.
-
+<p>
+Used dataset: pan15-author-profiling-training-dataset-2015-03-02
+</p>
