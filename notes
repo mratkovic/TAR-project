@@ -17,3 +17,11 @@ Regresija za ostalo:
 Najbolji:
     linearna regresija i SVR
 
+
+
+Preprocess:
+ - Linkove mjenjamo s URL tagom, @username mjenjamo sa REP tagom (reply)
+ - Sve u mala slova
+ - trigrami
+ - tf-idf za vektoriziranje
+
