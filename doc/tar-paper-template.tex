@@ -79,15 +79,22 @@ For the gender and age--group classification subproblem, following approaches we
 	\item random forest classifier
 	\item SVC (using \textit{rbf}, linear, poly-- or sigmoid kernels)
 \end{itemize}
-\noindent Results of using each approach are compared in the table \ref{tab:classifiers}. The best result was obtained by using SVC with linear kernel.
+\noindent Results of using each approach are compared in the table \ref{tab:regressors}. The best result was obtained by using SVC with linear kernel.
 
 \subsection{Personality traits regression}
+For the personality traits regression, following approaches were considered:
+\begin{itemize}
+	\item linear regression
+	\item decision tree regressor
+	\item random forest regressor
+	\item SVR (using various kernels)
+\end{itemize}
+\noindent Results of using each approach are compared in the table \ref{tab:classifiers}. The best result was obtained by using SVR and linear regression.
 
 %This is the second subsection of the second section. Referencing the (sub)sections in text is performed as follows: ``in Section \ref{sec:first} we have shown \dots''.
 
-\subsubsection{Sub-subsection example} 
-
-This is a sub-subsection. If possible, it is better to avoid sub-subsections. 
+\section{Testing}
+Testing.
 
 \section{Results}
 The results.
@@ -133,6 +140,23 @@ Three   & Third row text \\
 \bottomrule
 \end{tabular}
 \end{center}
+\end{table}
+
+\begin{table}
+	\caption{Comparison of results obtained by using different regressors.}
+	\label{tab:regressors}
+	\begin{center}
+		\begin{tabular}{ll}
+			\toprule
+			Heading1 & Heading2 \\
+			\midrule
+			One & First row text \\
+			Two   & Second row text \\
+			Three   & Third row text \\
+			& Fourth row text \\
+			\bottomrule
+		\end{tabular}
+	\end{center}
 \end{table}
 
 \subsection{Wide tables}
