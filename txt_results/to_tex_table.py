@@ -1,6 +1,8 @@
-path = './in.tmp'
-with open(path, 'r') as in_file:
-    for line in in_file:
-        nums = line.strip().split(' ')
-        print '$ %s $ \\' % ' $ & $ '.join(nums)
+import sys
+import re
+for line in sys.stdin:
+    line = line.strip()
+    if not line: continue
+    nums = re.split(' +', line)
+    print r'$ %s $ \\' % ' $ & $ '.join(nums)
 
