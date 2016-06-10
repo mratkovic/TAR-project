@@ -1,15 +1,18 @@
 \begin{thebibliography}{}
 
-\bibitem[\protect\citename{Johnson and Howells}1974]{johnson-howells}
-G.~B. Johnson and W.~W. Howells.
-\newblock 1974.
-\newblock Title title title title title title title title title title.
-\newblock {\em Journal journal journal}.
+\bibitem[\protect\citename{Bird, Klein, and Loper}2015]{nltk}
+Steven Bird, Ewan Klein, and Edward Loper
+\newblock 2015.
+\newblock Natural Language Processing with Python
 
-\bibitem[\protect\citename{Johnson \bgroup et al.\egroup }1976]{johnson-etc}
-G.~B. Johnson, W.~W. Howells, and A.~N. Other.
-\newblock 1976.
-\newblock Title title title title title title title title title title.
-\newblock {\em Journal journal journal}.
+\bibitem[\protect\citename{Rangel \bgroup et al.\egroup}2015]{panoverview}
+Francisco Rangel, Martin Potthast, Fabio Celli, Benno Stein, Paolo Rosso and Walter Daelemans
+\newblock 2015.
+\newblock Overview of the 3rd Author Profiling Task at PAN 2015
+
+\bibitem[\protect\citename{Rangel \bgroup et al.\egroup}2014]{panoverviewl}
+Francisco Rangel, Paolo Rosso, Irina Chugur, Martin Potthast, Martin Trenkmann, Benno Stein, Ben Verhoeven and Walter Daelemans
+\newblock 2014.
+\newblock Overview of the 2rd Author Profiling Task at PAN 2014
 
 \end{thebibliography}
