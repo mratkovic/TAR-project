@@ -47,6 +47,7 @@ Degrees of each trait range from -0.5 (indicating the total opposite), to 0.5 (i
 Provided with degrees of the five traits, it is possible to determine author's gender and age--group, via classification based on a model trained on previously labelled data.
 In this project, we used the linear SVC and Gaussian naive Bayes models for the classification into gender and age--group, and the linear regression with squared error measure for determining the degrees of personality traits.
 The training set we used was a collection of twitter posts in English, Spanish, Italian and Dutch authors, ranging from around 35 authors in Dutch to 150 in English, each author's file containing about 100 posts.
+Of these four sets, English and Spanish are labelled with age--group, while the Italian and Dutch sets are not.
 
 \section{Approach}
 
@@ -63,7 +64,7 @@ When that is done, following steps are also applied:
 \begin{itemize}
 	\item \textit{urls} to other sites are substituted with an \textsc{url} tag, and usernames (when referenced in replies) are substituted with a \textsc{reply} tag,
 	\item all the text is converted to lower case because we don't deal with capitalization of words, only with words themselves;
-	\item more than 3 repetitions of the same letter are reduced to 3 letters, so that the words like \textit{``coooool''} (5 repetitions) and \textit{``coooooool''} (7 repetitions) are both treated as the same word, but distinctly from \textit{``cool''}, because while we want to take repetitions into account, we would like to ignore the quantity of repeated letters (see the Section \ref{sec:features});
+	\item more than 3 repetitions of the same character are reduced to 3 letters, so that the words like \textit{``coooool''} (5 repetitions) and \textit{``coooooool''} (7 repetitions) are both treated as the same word, but distinctly from \textit{``cool''}, because while we want to take repetitions into account, we would like to ignore the quantity of repeated characters (see the Section \ref{sec:features});
 	\item stop words (for that particular language) are deleted from the text, because they are considered unsignificant for author profiling.
 \end{itemize}
 
@@ -78,7 +79,7 @@ Here is the list of cosidered additional features, and explanation for each of t
 
 \begin{itemize}
 	\item \textbf{number of emoticons:} the average number of emoticons used in a post (e.g. \verb|:)|, \verb|<3|; not considering each emoticon distinctly but all of them in total),
-	\item \textbf{number of consecutive long repetitions of letters:} as mentioned before, we count only occurences of repetitions longer than 3 letters, not the length of repetitions themselves -- these repetitions most of the time do not have constant number of letters, even for the same author, or the same post, so it is a better approach to take into account only instances of repetitions;
+	\item \textbf{number of consecutive long repetitions of characters:} as mentioned before, we count only occurences of repetitions longer than 3 characters, not the length of repetitions themselves -- these repetitions most of the time do not have constant number of characters, even for the same author, or the same post, so it is a better approach to take into account only instances of repetitions;
 	\item \textbf{number of replies:} the average number of replies to another user per each post,
 	\item \textbf{number of hashtags:} the average number of hashtags per post,
 	\item \textbf{number of exclamation marks:} the average number of exclamation marks (\verb|!|) per post -- each exclamation marks is counted, as we considered that, opposed to the consecutive repetition of letters, repeated exclamation marks do indicate author's stronger emotion to a some degree.
@@ -115,25 +116,126 @@ For the personality traits regression, following approaches were considered:
 Due to the lack of access to the official testing dataset (because of an ongoing competition), the official training dataset was divided into a subset for training (around 70\%) and a subset for testing (around 30\%).
 
 The model hyperparameters for gender and age--group classifiers are optimized using \textit{k--fold} cross--validation.
+Afterwards, we select \textit{k} best features using the ANOVA F--value.
 
 \section{Results}
 \label{sec:results}
 For the age--group and gender classification, baseline error is represented as score of Naive Bayes Classifier.
 For the personality traits, we defined baseline error as root mean--square error of average of all features.
-Precision, recall, F1 micro score, and macro score measures for each language are shown in table \ref{tab:scores}.
+Precision, recall, F1 micro score, and macro score measures for each language are shown in tables \ref{tab:scores-age} (age--groups), \ref{tab:scores-gender} (gender), and \ref{tab:scores-personality} (personality traits).
 
 \begin{table*}
-\caption{Overview of results per language.}
-\label{tab:classifiers}
+\caption{Overview of results of age--group classification per language. Baseline scores are given for comparison}
+\label{tab:scores-age}
 \begin{center}
-\begin{tabular}{l|r|r|r||r}
+\begin{tabular}{l|rrrrr}
 \toprule
-Language & Precision & Recall & F1 & Macro score \\
+Language & Accuracy & Precision & Recall & F1\textsuperscript{(micro)} & F1\textsuperscript{(macro)} \\
 \midrule
-\textit{English} & $0.71787$ & $0.64035$ & $0.65214$ & $0.78261$ \\
-\textit{Italian} & & & & \\
-\textit{Spanish} & & & & \\
-\textit{Dutch} & & & & \\
+English & $ 0.782 $ & $ 0.717 $ & $ 0.640 $ & $ 0.652 $ & $ 0.782 $ \\
+English (baseline) &$ 0.326 $ & $ 0.081 $ & $ 0.250 $ & $ 0.122 $ & $ 0.326 $ \\
+Spanish & $ 0.933 $ & $ 0.975 $ & $  0.900 $ & $ 0.924 $ & $ 0.933 $ \\
+Spanish (baseline) & $  0.600 $ & $  0.150 $ & $  0.250 $ & $ 0.187 $ & $  0.600 $ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}
+\caption{Overview of results of gender classification per language. Baseline scores are given for comparison}
+\label{tab:scores-gender}
+\begin{center}
+\begin{tabular}{l|rrrr}
+\toprule
+Language & Accuracy & Precision & Recall & F1 \\
+\midrule
+English & $ 0.956 $ & $ 0.888 $ & $ 1.000 $ & $ 0.941 $ \\
+English (baseline) & $ 0.347 $ & $ 0.347 $ & $ 1.000 $ & $ 0.516 $ \\
+Spanish & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+Spanish (baseline) & $ 0.400 $ & $ 0.400 $ & $ 1.000 $ & $ 0.571 $ \\
+Italian & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+Italian (baseline) & $ 0.416 $ & $ 0.000 $ & $ 0.000 $ & $ 0.000 $ \\
+Dutch & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+Dutch (baseline) & $ 0.454 $ & $ 0.454 $ & $ 1.000 $ & $ 0.625 $ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}
+\caption{Overview of RMSE of personality traits regression per language. Baseline scores are given for comparison}
+\label{tab:scores-personality}
+\begin{center}
+\begin{tabular}{l|rrrrr}
+\toprule
+Language & Extraversion & Stability & Agreeableness & Conscient\-iousness & Openness \\
+\midrule
+English & $ 0.122 $ & $ 0.179 $ & $ 0.153 $ & $ 0.140 $ & $ 0.130 $ \\
+English (baseline) & $ 0.164 $ & $ 0.235 $ & $ 0.182 $ & $ 0.167 $ & $ 0.155 $ \\
+Spanish & $ 0.080 $ & $ 0.143 $ & $ 0.103 $ & $ 0.155 $ & $ 0.131 $ \\
+Spanish (baseline) & $ 0.123 $ & $ 0.220 $ & $ 0.149 $ & $ 0.211 $ & $ 0.183 $ \\
+Italian & $ 0.048 $ & $ 0.123 $ & $ 0.067 $ & $ 0.086 $ & $ 0.099 $ \\
+Italian (baseline) & $ 0.136 $ & $ 0.166 $ & $ 0.116 $ & $ 0.162 $ & $ 0.162 $ \\
+Dutch & $ 0.087 $ & $ 0.112 $ & $ 0.129 $ & $ 0.064 $ & $ 0.041 $ \\
+Dutch (baseline) & $ 0.137 $ & $ 0.197 $ & $ 0.155 $ & $ 0.115 $ & $ 0.116 $ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table*}
+
+Further observation of additional features values shows there is correlation between some features and age--groups and/or gender of the author.
+For example, average post length tends to be longer for older users than for younger users, for both the English and Spanish corpora.
+Number of user replies in average is also greater for older users than for younger users, for both languages.
+Average number of hashtags per posts seems to slightly increase towards older users in English corpus, however it is not in linear correspondence with age in Spanish corpus.
+
+Also, there is correlation between the average number of emoticons per posts considering the gender of user: in the English, Italian and Dutch corpora, female users in average tend to use up to three times as many emoticons than male users.
+However, in Spanish corpus the situation is reversed: male users in average tend to use in more emoticons than female users.
+Same goes for number of exclamation marks: female users in all languages use on average more exclamation marks than male users.
+
+Some features seem not to have any correspondence to either age--group or gender, for example the post length deviation.
+We can see those correlations in the tables \ref{tab:additionalfeatures-age} (age--groups) and \ref{tab:additionalfeatures-gender} (gender).
+
+\begin{table*}
+\caption{Overview of additional features values for each age--group, per language.}
+\label{tab:additionalfeatures-age}
+\begin{center}
+\begin{tabular}{l|rrrr|rrrr}
+\toprule
+Language & \multicolumn{4}{|c|}{English} & \multicolumn{4}{|c}{Spanish} \\
+Age--group & 18-24 & 25-34 & 35-49 & 50-XX & 18-24 & 25-34 & 35-49 & 50-XX \\
+\midrule
+Post length & $ 60.714 $ & $ 85.853 $ & $ 86.680 $ & $ 93.753 $ & $ 75.728 $ & $ 85.246 $ & $ 92.804 $ & $ 101.991 $ \\
+Post length deviation & $ 29.656 $ & $ 29.401 $ & $ 29.532 $ & $ 32.192 $ & $ 31.377 $ & $ 31.234 $ & $ 30.719 $ & $ 29.200 $ \\
+Word length & $ 4.908 $ & $ 5.984 $ & $ 6.312 $ & $ 6.013 $ & $ 4.935 $ & $ 5.295 $ & $ 5.647 $ & $ 5.409 $ \\
+Word deviation & $ 3.493 $ & $ 4.726 $ & $ 5.088 $ & $ 4.452 $ & $ 3.356 $ & $ 3.882 $ & $ 4.230 $ & $ 3.963 $ \\
+Emoticon count & $ 0.057 $ & $ 0.064 $ & $ 0.046 $ & $ 0.038 $ & $ 0.135 $ & $ 0.104 $ & $ 0.053 $ & $ 0.030 $ \\
+Hashtags & $ 0.127 $ & $ 0.658 $ & $ 0.267 $ & $ 0.514 $ & $ 0.168 $ & $ 0.340 $ & $ 0.259 $ & $ 0.231 $ \\
+Character repetitions & $ 0.040 $ & $ 0.012 $ & $ 0.017 $ & $ 0.003 $ & $ 0.065 $ & $ 0.022 $ & $ 0.030 $ & $ 0.022 $ \\
+Exclamation marks & $ 0.137 $ & $ 0.207 $ & $ 0.195 $ & $ 0.527 $ & $ 0.183 $ & $ 0.244 $ & $ 0.257 $ & $ 0.276 $ \\
+User replies & $ 0.492 $ & $ 0.540 $ & $ 0.632 $ & $ 1.293 $ & $ 0.579 $ & $ 0.715 $ & $ 0.818 $ & $ 0.854 $ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{table*}
+
+\begin{table*}
+\caption{Overview of additional features values for gender, per language.}
+\label{tab:additionalfeatures-gender}
+\begin{center}
+\begin{tabular}{l|rr|rr|rr|rr}
+\toprule
+Language & \multicolumn{2}{|c|}{English} & \multicolumn{2}{|c}{Spanish} & \multicolumn{2}{|c}{Italian} & \multicolumn{2}{|c}{Dutch} \\
+Gender & Female & Male & Female & Male & Female & Male & Female & Male \\
+\midrule
+Post length & $ 76.786 $ & $ 77.222 $ & $ 86.030 $ & $ 86.949 $ & $ 91.555 $ & $ 87.513 $ & $ 77.442 $ & $ 77.239 $ \\
+Post length deviation & $ 29.711 $ & $ 29.764 $ & $ 30.767 $ & $ 31.131 $ & $ 32.908 $ & $ 30.594 $ & $ 29.574 $ & $ 30.829 $ \\
+Word length & $ 5.529 $ & $ 5.718 $ & $ 5.328 $ & $ 5.281 $ & $ 5.898 $ & $ 6.153 $ & $ 5.255 $ & $ 5.229 $ \\
+Word length deviation & $ 4.187 $ & $ 4.385 $ & $ 3.916 $ & $ 3.786 $ & $ 4.202 $ & $ 4.705 $ & $ 3.489 $ & $ 3.476 $ \\
+Emoticons count & $ 0.075 $ & $ 0.039 $ & $ 0.082 $ & $ 0.102 $ & $ 0.214 $ & $ 0.072 $ & $ 0.119 $ & $ 0.072 $ \\
+Hashtags &  $ 0.380 $ & $ 0.394 $ & $ 0.357 $ & $ 0.190 $ & $ 0.540 $ & $ 0.700 $ & $ 0.424 $ & $ 0.120 $ \\
+Character repetitions & $ 0.026 $ & $ 0.020 $ & $ 0.041 $ & $ 0.025 $ & $ 0.008 $ & $ 0.006 $ & $ 0.026 $ & $ 0.016 $ \\
+Exclamation marks & $ 0.275 $ & $ 0.133 $ & $ 0.252 $ & $ 0.221 $ & $ 0.228 $ & $ 0.168 $ & $ 0.271 $ & $ 0.121 $ \\
+User replies & $ 0.641 $ & $ 0.548 $ & $ 0.745 $ & $ 0.698 $ & $ 0.725 $ & $ 0.556 $ & $ 0.647 $ & $ 0.909 $ \\
 \bottomrule
 \end{tabular}
 \end{center}
