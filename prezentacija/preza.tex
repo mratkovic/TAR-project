@@ -19,6 +19,9 @@
 \usepackage[T1]{fontenc}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{xcolor}
+\usepackage{tabu}
+
 
 \mode<presentation> {
 
@@ -74,9 +77,9 @@
 %\usecolortheme{wolverine}
 
 %\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
-%\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+%\setbeamertemplate{footline}[0] % To replace the footer line in all slides with a simple slide count uncomment this line
 
-%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
 }
 
 %\usepackage{graphicx} % Allows including images
@@ -93,20 +96,22 @@
 {
 FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 \medskip
-\textit{\{lovre.mrcela, marko.ratkovic, ante.zuzul\}@fer.hr} % Your email address
+\texttt{\{lovre.mrcela,marko.ratkovic,ante.zuzul\}@fer.hr} % Your email address
 }
 \date{\today} % Date, can be changed to a custom date
 
 \begin{document}
-
+{
+\setbeamertemplate{headline}[]
+\setbeamertemplate{footline}{}
 \begin{frame}
 \titlepage % Print the title page as the first slide
 \end{frame}
-
-\begin{frame}
-\frametitle{Content} % Table of contents slide, comment this block out to remove it
-\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
-\end{frame}
+}
+%\begin{frame}
+%\frametitle{Contents} % Table of contents slide, comment this block out to remove it
+%\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+%\end{frame}
 
 %----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
@@ -114,7 +119,7 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 
 %------------------------------------------------
 \section{Introduction} % Sections can be created in order to organize your presentation into discrete blocks, all sections and subsections are automatically printed in the table of contents as an overview of the talk
-\frame{\tableofcontents[currentsection]}
+\frame{\tableofcontents[currentsection] \frametitle{Contents}}
 %------------------------------------------------
 
 %\subsection{Subsection Example} % A subsection can be created just before a set of slides with a common theme to further break down your presentation into chunks
@@ -127,17 +132,19 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 	What is author profiling?
 	\pause
 	\begin{itemize}
-		\item Author profiling is process of determining author age-group, gender and Big five personality traits.
+		\item author profiling deals with determining author's personality and identity based on written texts
+	\end{itemize}
 		\pause
-		\item For this project we are trying to profile author base on their tweeter post.
-		\pause
-		\item Process have two separate task:
+	\vspace{20px}
+	Tasks:
+	\pause
+	\begin{itemize}
+		\item age--group \textit{(classification)}
+		\item gender \textit{(classification)}
+		\item personality traits \textit{(regression)}
 		\begin{itemize}
-			\pause
-			\item[$ \bullet $] classification task for age-group and gender
-			\pause
-			\item[$ \bullet $] regression task for Big five personality traits
-		\end{itemize} 
+			\item extraversion, stability, agreableness, conscientiousness, openness to experience
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 
@@ -145,10 +152,13 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 
 \begin{frame}
 	\frametitle{Introduction}
+	Dataset:
+	\pause
 	\begin{itemize}
-		\item Dataset for task was taken for PAN competition.
-		\item Dataset consist 4 language: English, Spanish, Italian and Dutch.
-		\item Official test set isn't available due this year PAN competition.
+		\item PAN competition
+		\item 4 languages: English, Spanish, Italian and Dutch
+%		\item training set $\sim$ 150 authors, 100 posts per author
+%		\item official test set unavailable due currently ongoing competition
 	\end{itemize}
 \end{frame}
 
@@ -156,39 +166,42 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 
 
 \section{Scope of project}
-\frame{\tableofcontents[currentsection]}
+\frame{\tableofcontents[currentsection] \frametitle{Contents}}
 
 \begin{frame}
-	Approach to solving problem:
+	\frametitle{Approach}
+	Approach:
+	\pause
 	\begin{itemize}
-		\item find optimal set of features
+		\item text preprocessing
+		\item feature extraction
+		\item best $k$ features
 		\item find optimal model
+		\item evaluate the model on the test set
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Preprocessing tweets}
+	Preprocessing tasks:
+	\pause
 	\begin{itemize}
-		\item substituting \textit{url} with \textit{\textbf{URL}}
-		\item substituting \textit{usernames} (referenced in replies) with \textit{\textbf{REPLY}}
+		\item substituting \textit{url} with \textbf{URL} tag
+		\item substituting \textit{usernames} (referenced in replies) with \textbf{REPLY} tag
 		\item removing stop words from set of user tweets
 		\item converting all tweets to lowercase
-		\item removing repetitions of letter in word (e.g 'coooool' to 'cool')
+		\item trimming consecutive repetitions of a letter in words (e.g \textit{`coooool'} to \textit{`coool'})
 	\end{itemize}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Set of features}
 	Features used for this problem:
+	\pause
 	\begin{itemize}
-		\item tf-idf weighting scheme used on trigrams representation of preprocessed user tweets
-		\item number of emoticons
-		\item number of consecutive long repetitions of characters
-		\item number of replies
-		\item number of hashtags
-		\item number of exclamation marks
-		\item average length and standard deviation of posts
-		\item average length and standard deviation of words
+		\item tf--idf vectorized tweets
+		\item number of emoticons, replies, hashtags, \ldots
+		\item average length and standard deviation of posts and words respectively
 	\end{itemize}
 \end{frame}
 
@@ -197,6 +210,7 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 \begin{frame}
 	\frametitle{Models}
 	Model used for classification:
+	\pause
 	\begin{itemize}
 		\item Logistic Regression
 		\item Naive Bayes Classifier
@@ -210,6 +224,7 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 \begin{frame}
 	\frametitle{Models}
 	Model used for regression:
+	\pause
 	\begin{itemize}
 		\item Linear Regression
 		\item Decision Tree Regressor
@@ -220,40 +235,43 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 
 %------------------------------------------------
 \section{Testing}
-\frame{\tableofcontents[currentsection]}
+\frame{\tableofcontents[currentsection] \frametitle{Contents}}
 %------------------------------------------------
 \begin{frame}
 	\frametitle{Testing}
+	Testing:
+	\pause
 	\begin{itemize}
-		\item Training dataset was divided into subset for training (70\%) and for validation (30\%)
-		\item Optimal model and hyperparameters were selected by using 10–fold cross–validation
-		\item We have used baseline models because official test set wasn't available at this time
+		\item official test set unavailable (due to the ongoing competition)
+		\item subset for training (70\%) and testing (30\%)
+		\item 10–fold cross–validation
+%		\item We have used baseline models because official test set wasn't available at this time
 	\end{itemize}
 \end{frame}
 %------------------------------------------------
 \section{Results}
 
 \begin{frame}
-	\frametitle{Overview of additional features for each age-group per language}
+	\frametitle{Overview of additional features}
 	\only<1>{
 		\begin{table}
 			\caption{Overview of additional features values for each age--group, per language.}
 			\label{tab:additionalfeatures-age}
 			\begin{center}
-			\begin{tabular}{l|rrrr|}
+			\begin{tabular}{l|rrrr}
 			\toprule
-			Language & \multicolumn{4}{|c|}{English}  \\
+			Language & \multicolumn{4}{c}{English}  \\
 			Age--group & 18-24 & 25-34 & 35-49 & 50-XX  \\
 			\midrule
-			Post length & $ 60.714 $ & $ 85.853 $ & $ 86.680 $ & $ 93.753 $  \\
+			\textbf{Post length} & $ 60.714 $ & $ 85.853 $ & $ 86.680 $ & $ 93.753 $  \\
 			Post length deviation & $ 29.656 $ & $ 29.401 $ & $ 29.532 $ & $ 32.192 $  \\
-			Word length & $ 4.908 $ & $ 5.984 $ & $ 6.312 $ & $ 6.013 $ \\
+			\textbf{Word length} & $ 4.908 $ & $ 5.984 $ & $ 6.312 $ & $ 6.013 $ \\
 			Word deviation & $ 3.493 $ & $ 4.726 $ & $ 5.088 $ & $ 4.452 $ \\
 			Emoticon count & $ 0.057 $ & $ 0.064 $ & $ 0.046 $ & $ 0.038 $ \\
 			Hashtags & $ 0.127 $ & $ 0.658 $ & $ 0.267 $ & $ 0.514 $ \\
-			Character repetitions & $ 0.040 $ & $ 0.012 $ & $ 0.017 $ & $ 0.003 $  \\
+			\textbf{Character repetitions} & $ 0.040 $ & $ 0.012 $ & $ 0.017 $ & $ 0.003 $  \\
 			Exclamation marks & $ 0.137 $ & $ 0.207 $ & $ 0.195 $ & $ 0.527 $  \\
-			User replies & $ 0.492 $ & $ 0.540 $ & $ 0.632 $ & $ 1.293 $  \\
+			\textbf{User replies} & $ 0.492 $ & $ 0.540 $ & $ 0.632 $ & $ 1.293 $  \\
 			\bottomrule
 			\end{tabular}
 			\end{center}
@@ -266,18 +284,18 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 			\begin{center}
 			\begin{tabular}{l|rrrr}
 			\toprule
-			Language & \multicolumn{4}{|c}{Spanish} \\
+			Language & \multicolumn{4}{c}{Spanish} \\
 			Age--group & 18-24 & 25-34 & 35-49 & 50-XX \\
 			\midrule
-			Post length  & $ 75.728 $ & $ 85.246 $ & $ 92.804 $ & $ 101.991 $ \\
+			\textbf{Post length}  & $ 75.728 $ & $ 85.246 $ & $ 92.804 $ & $ 101.991 $ \\
 			Post length deviation  & $ 31.377 $ & $ 31.234 $ & $ 30.719 $ & $ 29.200 $ \\
-			Word length  & $ 4.935 $ & $ 5.295 $ & $ 5.647 $ & $ 5.409 $ \\
+			\textbf{Word length}  & $ 4.935 $ & $ 5.295 $ & $ 5.647 $ & $ 5.409 $ \\
 			Word deviation  & $ 3.356 $ & $ 3.882 $ & $ 4.230 $ & $ 3.963 $ \\
-			Emoticon count  & $ 0.135 $ & $ 0.104 $ & $ 0.053 $ & $ 0.030 $ \\
+			\textbf{Emoticon count}  & $ 0.135 $ & $ 0.104 $ & $ 0.053 $ & $ 0.030 $ \\
 			Hashtags  & $ 0.168 $ & $ 0.340 $ & $ 0.259 $ & $ 0.231 $ \\
 			Character repetitions  & $ 0.065 $ & $ 0.022 $ & $ 0.030 $ & $ 0.022 $ \\
 			Exclamation marks & $ 0.183 $ & $ 0.244 $ & $ 0.257 $ & $ 0.276 $ \\
-			User replies & $ 0.579 $ & $ 0.715 $ & $ 0.818 $ & $ 0.854 $ \\
+			\textbf{User replies} & $ 0.579 $ & $ 0.715 $ & $ 0.818 $ & $ 0.854 $ \\
 			\bottomrule
 			\end{tabular}
 			\end{center}
@@ -286,53 +304,145 @@ FAKULTET ELEKTROTEHNIKE I RAČUNARSTVA \\ % Your institution for the title page
 \end{frame}
 
 \begin{frame}
-	\frametitle{Overview of additional features values for gender per language}
-	Table 2
+	\frametitle{Overview of additional features values for gender}
+	\begin{table}
+		\caption{Overview of additional features values for gender, per language.}
+		\label{tab:additionalfeatures-gender}
+		\begin{center}
+			\begin{tabular}{l|rr|rr}
+				\toprule
+				Language & \multicolumn{2}{c|}{English} & \multicolumn{2}{c}{Spanish}  \\
+				Gender & Female & Male & Female & Male \\
+				\midrule
+				Post length & $ 76.786 $ & $ 77.222 $ & $ 86.030 $ & $ 86.949 $ \\
+				Post length deviation & $ 31.131 $ & $ 32.908 $ & $ 30.594 $ & $ 29.574 $ \\
+				Word length & $ 5.529 $ & $ 5.718 $ & $ 5.328 $ & $ 5.281 $  \\
+				Word length deviation & $ 4.187 $ & $ 4.385 $ & $ 3.916 $ & $ 3.786 $ \\
+				\textbf{Emoticons count} & $ 0.075 $ & $ 0.039 $ & $ 0.082 $ & $ 0.102 $ \\
+				Hashtags &  $ 0.380 $ & $ 0.394 $ & $ 0.357 $ & $ 0.190 $ \\
+				Character repetitions & $ 0.026 $ & $ 0.020 $ & $ 0.041 $ & $ 0.025 $ \\
+				\textbf{Exclamation marks} & $ 0.275 $ & $ 0.133 $ & $ 0.252 $ & $ 0.221 $\\
+				User replies & $ 0.641 $ & $ 0.548 $ & $ 0.745 $ & $ 0.698 $ \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{table}
 \end{frame}
 
 \begin{frame}
 	\frametitle{Overview of results of age–group classification per language}
-	table 3	
+	\begin{table}
+		\caption{Overview of additional features values for gender, per language.}
+		\label{tab:additionalfeatures-gender}
+		\begin{center}
+			\begin{tabular}{l|rr|rr}
+				\toprule
+				Language & \multicolumn{2}{c}{Italian} & \multicolumn{2}{|c}{Dutch} \\
+				Gender & Female & Male & Female & Male \\
+				\midrule
+				Post length & $ 91.555 $ & $ 87.513 $ & $ 77.442 $ & $ 77.239 $ \\
+				Post length deviation & $ 32.908 $ & $ 30.594 $ & $ 29.574 $ & $ 30.829 $ \\
+				Word length & $ 5.898 $ & $ 6.153 $ & $ 5.255 $ & $ 5.229 $ \\
+				Word length deviation & $ 4.202 $ & $ 4.705 $ & $ 3.489 $ & $ 3.476 $ \\
+				\textbf{Emoticons count} & $ 0.214 $ & $ 0.072 $ & $ 0.119 $ & $ 0.072 $ \\
+				Hashtags & $ 0.540 $ & $ 0.700 $ & $ 0.424 $ & $ 0.120 $ \\
+				Character repetitions & $ 0.008 $ & $ 0.006 $ & $ 0.026 $ & $ 0.016 $ \\
+				\textbf{Exclamation marks} & $ 0.228 $ & $ 0.168 $ & $ 0.271 $ & $ 0.121 $ \\
+				User replies & $ 0.725 $ & $ 0.556 $ & $ 0.647 $ & $ 0.909 $ \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{table}
 \end{frame}
 
-
 \begin{frame}
-	table 4	
+	\frametitle{Overview of results}
+	\begin{table}
+		\caption{Overview of results of age--group classification per language. Baseline scores are given for comparison}
+		\label{tab:scores-age}
+		\begin{center}
+			\begin{tabular}{l|rrrrr}
+				\toprule
+				Language & Acc. & Prec. & Rec. & F1\textsuperscript{(micro)} & F1\textsuperscript{(macro)} \\
+				\midrule
+				English & $ 0.782 $ & $ 0.717 $ & $ 0.640 $ & $ 0.652 $ & $ 0.782 $ \\
+				\textbf{English (baseline)} &$ 0.326 $ & $ 0.081 $ & $ 0.250 $ & $ 0.122 $ & $ 0.326 $ \\
+				Spanish & $ 0.933 $ & $ 0.975 $ & $  0.900 $ & $ 0.924 $ & $ 0.933 $ \\
+				\textbf{Spanish (baseline)} & $  0.600 $ & $  0.150 $ & $  0.250 $ & $ 0.187 $ & $  0.600 $ \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{table}
 \end{frame}
 
 \begin{frame}
-	table 5	
+	\begin{table}
+		\caption{Overview of results of gender classification per language. Baseline scores are given for comparison}
+		\label{tab:scores-gender}
+		\begin{center}
+			\begin{tabular}{l|rrrr}
+				\toprule
+				Language & Accuracy & Precision & Recall & F1 \\
+				\midrule
+				English & $ 0.956 $ & $ 0.888 $ & $ 1.000 $ & $ 0.941 $ \\
+				\textbf{English (baseline)} & $ 0.347 $ & $ 0.347 $ & $ 1.000 $ & $ 0.516 $ \\
+				Spanish & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+				\textbf{Spanish (baseline)} & $ 0.400 $ & $ 0.400 $ & $ 1.000 $ & $ 0.571 $ \\
+				Italian & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+				\textbf{Italian (baseline)} & $ 0.416 $ & $ 0.000 $ & $ 0.000 $ & $ 0.000 $ \\
+				Dutch & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+				\textbf{Dutch (baseline)} & $ 0.454 $ & $ 0.454 $ & $ 1.000 $ & $ 0.625 $ \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{table}
+\end{frame}
+
+\begin{frame}
+	\begin{table}
+		\caption{Overview of RMSE of personality traits regression per language. Baseline scores are given for comparison}
+		\label{tab:scores-personality}
+		\begin{center}
+			\begin{tabular}{l|rrrrr}
+				\toprule
+				Language & Extra & Stab & Agree & Consc & Open \\
+				\midrule
+				English & $ 0.122 $ & $ 0.179 $ & $ 0.153 $ & $ 0.140 $ & $ 0.130 $ \\
+				\textbf{English (baseline)} & $ 0.164 $ & $ 0.235 $ & $ 0.182 $ & $ 0.167 $ & $ 0.155 $ \\
+				Spanish & $ 0.080 $ & $ 0.143 $ & $ 0.103 $ & $ 0.155 $ & $ 0.131 $ \\
+				\textbf{Spanish (baseline)} & $ 0.123 $ & $ 0.220 $ & $ 0.149 $ & $ 0.211 $ & $ 0.183 $ \\
+				Italian & $ 0.048 $ & $ 0.123 $ & $ 0.067 $ & $ 0.086 $ & $ 0.099 $ \\
+				\textbf{Italian (baseline)} & $ 0.136 $ & $ 0.166 $ & $ 0.116 $ & $ 0.162 $ & $ 0.162 $ \\
+				Dutch & $ 0.087 $ & $ 0.112 $ & $ 0.129 $ & $ 0.064 $ & $ 0.041 $ \\
+				\textbf{Dutch (baseline)} & $ 0.137 $ & $ 0.197 $ & $ 0.155 $ & $ 0.115 $ & $ 0.116 $ \\
+				\bottomrule
+			\end{tabular}
+		\end{center}
+	\end{table}
 \end{frame}
 %------------------------------------------------
 \section{Conclusion}
-\frame{\tableofcontents[currentsection]}
+\frame{\tableofcontents[currentsection] \frametitle{Contents}}
 
 %------------------------------------------------
 
 \begin{frame}
 	\frametitle{Conclusion}
 	\begin{itemize}
-		\item We succeeded to obtain results similar to other published works
+		\item We succeeded to obtain results similar to other published works.\\
+		\vspace{20px}
 		\item Possible upgrade:
 		\begin{itemize}
-			\item Latent Semantic Analysis
+			\item \textit{Latent Semantic Analysis}
 		\end{itemize}
 	\end{itemize}
 \end{frame}
 
 %------------------------------------------------
 
-
-
 \begin{frame}
-	\frametitle{The End}
-	\Huge{\centerline{Tnx for listening!}}
-\end{frame}
-
-%------------------------------------------------
-
-\begin{frame}
-\Huge{\centerline{Questions??}}
+		\frametitle{The End}
+	\Huge{\centerline{Questions??}}
 \end{frame}
 
 %----------------------------------------------------------------------------------------
