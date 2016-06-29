@@ -11,10 +11,11 @@
 \usepackage{booktabs}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{url}
 
 \usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
 
-\title{Author profiling}
+\title{Author Profiling - "nesto specificnije"}
 
 %VAŽNO: Zakomentirajte sljedeću liniju kada šaljete rad na recenziju
 \name{Lovre Mrčela, Marko Ratković, Ante Žužul}
@@ -27,9 +28,9 @@ Unska 3, 10000 Zagreb, Croatia\\
           
          
 \abstract{ 
-The goal of this project was to profile an author by analyzing a set of texts written by them, and then determining degree of each the Big Five personality traits.
-In addition, gender and age--group for each author are derived as well.
-The dataset was collected from twitter profiles, in English, Italian, Spanish and Dutch languages.
+The goal of this project was to profile an author by analyzing a set of texts written by them, and then determining the degree of each the Big Five personality traits.
+In addition, gender and age-group for each author are derived as well.
+The dataset was collected from twitter profiles, in English, Italian, Spanish, and Dutch languages.
 Approach was based on \textit{tf-idf}, considering occurrences of trigrams.
 The implementation is done in Python programming language, using \textit{nltk} and \textit{sklearn} libraries.
 }
@@ -40,21 +41,21 @@ The implementation is done in Python programming language, using \textit{nltk} a
 
 \section{Introduction}
 
-Author profiling deals with problem of describing someone's personality, by means of extracting information from their writing style.
-Personality can be described using five traits (the so-called \textit{``Big Five personality traits''}), which are: extraversion, stability, agreeableness, conscientiousness and openness to experience.
+Author profiling deals with the problem of describing someone's personality, by means of extracting information from their writing style.
+Personality can be described using five traits (the so-called \textit{``Big Five personality traits''}\footnote{\url{https://en.wikipedia.org/wiki/Big_Five_personality_traits}}), which are: extraversion, stability, agreeableness, conscientiousness, and openness to experience.
 Degrees of each trait range from -0.5 (indicating the total opposite), to 0.5 (indicating the exact match).
 
-Provided with degrees of the five traits, it is possible to determine author's gender and age--group, via classification based on a model trained on previously labeled data.
-In this project, we used the linear SVC and Gaussian naive Bayes models for the classification into gender and age--group, and the linear regression with squared error measure for determining the degrees of personality traits.
-The training set we used was a collection of twitter posts in English, Spanish, Italian and Dutch authors, ranging from around 35 authors in Dutch to 150 in English, each author's file containing about 100 posts.
-Of these four sets, English and Spanish are labeled with age--group, while the Italian and Dutch sets are not.
+Provided with degrees of the five traits, it is possible to determine author's gender and age-group, via classification based on a model trained on previously labeled data.
+In this project, we used the linear SVC and Gaussian naive Bayes models for the classification into gender and age-group, and the linear regression with squared error measure for determining the degrees of personality traits.
+The training set we used was a collection of twitter posts in English, Spanish, Italian, and Dutch authors, ranging from around 35 authors in Dutch to 150 in English, each author's file containing about 100 posts.
+Of these four sets, English and Spanish are labeled with age-group, while the Italian and Dutch sets are not.
 
 \section{Approach}
 
 In this section, the methods of our approach are thoroughly explained.
 First, the preprocessing of input text is carried out, and weighted vector of trigrams (three consecutive letters) is obtained.
 Then, from preprocessed text some additional feature vectors, which were reasonably expected to be discriminative, are extracted.
-Finally, gender and age--group classification and personality traits regression models are trained on extracted features, and final results are compared for various parameters.
+Finally, gender and age-group classification and personality traits regression models are trained on extracted features, and final results are compared for various parameters.
 
 \subsection{Text preprocessing}
 
@@ -74,7 +75,7 @@ More features are then extracted from preprocessed text, as described in the nex
 
 \subsection{Additional feature extraction}
 \label{sec:features}
-In addition to weighted vector of trigrams, we decided to investigate some further characteristics of the written corpora, which were expected to be discriminative for the gender and/or age--group.
+In addition to weighted vector of trigrams, we decided to investigate some further characteristics of the written corpora, which were expected to be discriminative for the gender and/or age-group.
 Here is the list of considered additional features, and explanation for each of them:
 
 \begin{itemize}
@@ -83,7 +84,7 @@ Here is the list of considered additional features, and explanation for each of 
 	\item \textbf{number of replies:} the average number of replies to another user per each post,
 	\item \textbf{number of hashtags:} the average number of hashtags per post,
 	\item \textbf{number of exclamation marks:} the average number of exclamation marks (\verb|!|) per post -- each exclamation marks is counted, as we considered that, opposed to the consecutive repetition of letters, repeated exclamation marks do indicate author's stronger emotion to a some degree.
-	\item \textbf{average length and standard deviation of posts:} we were inspecting average post length, as we presume it may also be correlated with age--groups;
+	\item \textbf{average length and standard deviation of posts:} we were inspecting average post length, as we presume it may also be correlated with age-groups;
 	\item \textbf{average length and standard deviation of words:} as above, but considering just words.
 \end{itemize}
 
@@ -91,12 +92,12 @@ It was expected for some of the features to be present in a greater degree in so
 The obtained results with respect to each feature are shown in the section \ref{sec:results}.
 
 The final feature set was obtained by selecting \textit{n} best features, where \textit{n} is also hyperparameter that needs to be optimized as well as the model.
-We select \textit{n} best features using the ANOVA F--value\footnote{http://scikit-learn.org/stable/modules/generated/
-	sklearn.feature\_selection.SelectKBest.html}.
+We select \textit{n} best features using the ANOVA F--value\footnote{\url{http://scikit-learn.org/stable/modules/generated/
+	sklearn.feature\_selection.SelectKBest.html}}.
 
-\subsection{Gender and age--group classification}
+\subsection{Gender and age-group classification}
 
-For the gender and age--group classification subproblem, following approaches were considered:
+For the gender and age-group classification subproblem, following approaches were considered:
 \begin{itemize}
 	\item Logistic Regression
 	\item Naive Bayes Classifier
@@ -104,7 +105,7 @@ For the gender and age--group classification subproblem, following approaches we
 	\item Random Forest Classifier
 	\item SVC (using \textit{rbf}, linear, poly- and sigmoid kernels)
 \end{itemize}
-\noindent The best results for age--groups were obtained using SVC with linear kernel, and for binary classification of gender, the Gaussian Naive Bayes.
+\noindent The best results for age-groups were obtained using SVC with linear kernel, and for binary classification of gender, the Gaussian Naive Bayes.
 
 \subsection{Personality traits regression}
 For the personality traits regression, following approaches were considered:
@@ -119,9 +120,9 @@ For the personality traits regression, following approaches were considered:
 All of these models are implemented in \textit{sklearn} library, which we are using in our project solution.
 
 \section{Testing}
-Due to the lack of access to the official testing dataset (because of an ongoing competition), the official training dataset was divided into a subset for training (70\%) and a subset for testing (30\%).
+Due to the lack of access to the official testing dataset (because of an ongoing competition), the official training dataset was divided across the authors into a subset for training (70\%) and a subset for testing (30\%). 
 
-From above mentioned models, optimal model and hyperparameters were selected by using \textit{10--fold} cross--validation.
+From the above mentioned models, optimal model and hyperparameters were selected by using \textit{10--fold} cross--validation on training set.
 Criterion for classifier (which was also used in PAN contest\citep{panoverview}) was accuracy score.
 Aside from accuracy, we also used precision, recall, and F1 measures (micro and macro, for multi--class classification) \citep{panoverviewl}.
 For the regressor, we used the root--mean--square error.
@@ -133,23 +134,23 @@ Thus, achieved results can be put into a more real perspective.
 
 \section{Results}
 \label{sec:results}
-%For the age--group and gender classification, baseline error is represented as score of Naive Bayes Classifier.
+%For the age-group and gender classification, baseline error is represented as score of Naive Bayes Classifier.
 %For the personality traits, we defined baseline error as root--mean--square error of average of all features.
 
-Further observation of additional features values shows there is correlation between some features and age--groups and/or gender of the author.
+Further observation of additional features values shows there is a correlation between some features and age-groups and/or gender of the author.
 For example, average post length tends to be longer for older users than for younger users, for both the English and Spanish corpora.
 Number of user replies in average is also greater for older users than for younger users, for both languages.
 Average number of hashtags per posts seems to slightly increase towards older users in English corpus, however it is not in linear correspondence with age in Spanish corpus.
 
-Also, there is correlation between the average number of emoticons per posts considering the gender of user: in the English, Italian and Dutch corpora, female users in average tend to use up to three times as many emoticons than male users.
+Also, there is correlation between the average number of emoticons per posts considering the gender of user: in the English, Italian, and Dutch corpora, female users in average tend to use up to three times as many emoticons than male users.
 However, in Spanish corpus the situation is reversed: male users in average tend to use in more emoticons than female users.
 Same goes for number of exclamation marks: female users in all languages use on average more exclamation marks than male users.
 
-Some features seem not to have any correspondence to either age--group or gender, for example the post length deviation.
-We can see those correlations in the tables \ref{tab:additionalfeatures-age} (age--groups) and \ref{tab:additionalfeatures-gender} (gender).
+Some features seem not to have any correspondence to either age-group or gender, for example the post length deviation.
+We can see those correlations in the tables \ref{tab:additionalfeatures-age} (age-groups) and \ref{tab:additionalfeatures-gender} (gender).
 
 \begin{table*}
-\caption{Overview of additional features values for each age--group, per language.}
+\caption{Overview of additional features values for each age-group, per language.}
 \label{tab:additionalfeatures-age}
 \begin{center}
 \begin{tabular}{l|rrrr|rrrr}
@@ -194,10 +195,10 @@ User replies & $ 0.641 $ & $ 0.548 $ & $ 0.745 $ & $ 0.698 $ & $ 0.725 $ & $ 0.5
 \end{center}
 \end{table*}
 
-Precision, recall, F1 micro score, and macro score measures for each language are shown in tables \ref{tab:scores-age} (age--groups), \ref{tab:scores-gender} (gender), and \ref{tab:scores-personality} (personality traits).
+Precision, recall, F1 micro score, and macro score measures for each language are shown in tables \ref{tab:scores-age} (age-groups), \ref{tab:scores-gender} (gender), and \ref{tab:scores-personality} (personality traits).
 
 \begin{table*}
-	\caption{Overview of results of age--group classification per language. Baseline scores are given for comparison}
+	\caption{Overview of results of age-group classification per language. Baseline scores are given for comparison}
 	\label{tab:scores-age}
 	\begin{center}
 		\begin{tabular}{l|rrrrr}
@@ -206,6 +207,7 @@ Precision, recall, F1 micro score, and macro score measures for each language ar
 			\midrule
 			English & $ 0.782 $ & $ 0.717 $ & $ 0.640 $ & $ 0.652 $ & $ 0.782 $ \\
 			English (baseline) &$ 0.326 $ & $ 0.081 $ & $ 0.250 $ & $ 0.122 $ & $ 0.326 $ \\
+			\midrule
 			Spanish & $ 0.933 $ & $ 0.975 $ & $  0.900 $ & $ 0.924 $ & $ 0.933 $ \\
 			Spanish (baseline) & $  0.600 $ & $  0.150 $ & $  0.250 $ & $ 0.187 $ & $  0.600 $ \\
 			\bottomrule
@@ -223,10 +225,13 @@ Precision, recall, F1 micro score, and macro score measures for each language ar
 			\midrule
 			English & $ 0.956 $ & $ 0.888 $ & $ 1.000 $ & $ 0.941 $ \\
 			English (baseline) & $ 0.347 $ & $ 0.347 $ & $ 1.000 $ & $ 0.516 $ \\
+			\midrule
 			Spanish & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
 			Spanish (baseline) & $ 0.400 $ & $ 0.400 $ & $ 1.000 $ & $ 0.571 $ \\
+			\midrule
 			Italian & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
 			Italian (baseline) & $ 0.416 $ & $ 0.000 $ & $ 0.000 $ & $ 0.000 $ \\
+			\midrule
 			Dutch & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
 			Dutch (baseline) & $ 0.454 $ & $ 0.454 $ & $ 1.000 $ & $ 0.625 $ \\
 			\bottomrule
@@ -244,10 +249,13 @@ Precision, recall, F1 micro score, and macro score measures for each language ar
 			\midrule
 			English & $ 0.122 $ & $ 0.179 $ & $ 0.153 $ & $ 0.140 $ & $ 0.130 $ \\
 			English (baseline) & $ 0.164 $ & $ 0.235 $ & $ 0.182 $ & $ 0.167 $ & $ 0.155 $ \\
+			\midrule
 			Spanish & $ 0.080 $ & $ 0.143 $ & $ 0.103 $ & $ 0.155 $ & $ 0.131 $ \\
 			Spanish (baseline) & $ 0.123 $ & $ 0.220 $ & $ 0.149 $ & $ 0.211 $ & $ 0.183 $ \\
+			\midrule
 			Italian & $ 0.048 $ & $ 0.123 $ & $ 0.067 $ & $ 0.086 $ & $ 0.099 $ \\
 			Italian (baseline) & $ 0.136 $ & $ 0.166 $ & $ 0.116 $ & $ 0.162 $ & $ 0.162 $ \\
+			\midrule
 			Dutch & $ 0.087 $ & $ 0.112 $ & $ 0.129 $ & $ 0.064 $ & $ 0.041 $ \\
 			Dutch (baseline) & $ 0.137 $ & $ 0.197 $ & $ 0.155 $ & $ 0.115 $ & $ 0.116 $ \\
 			\bottomrule
@@ -256,7 +264,7 @@ Precision, recall, F1 micro score, and macro score measures for each language ar
 \end{table*}
 
 \section{Conclusion}
-Experimenting with various models and features, we obtained results similar to other published works (in our case, tested on reduced training set).
+Experimenting with various models and features, we obtained results similar to other published works \citep{panoverview} (in our case, tested on reduced training set).
 Unfortunately, we were not able to test our solution on the official data due to the data not yet having been released.
 
 The possible upgrade of this work would be researching approach of Latent Semantic Analysis, as it may further improve detection of author personal traits.
