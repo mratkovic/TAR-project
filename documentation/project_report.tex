@@ -13,9 +13,10 @@
 \usepackage{amssymb}
 \usepackage{url}
 
-\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=5]{microtype}
+\newcommand{\vect}[1]{\boldsymbol{#1}}
 
-\title{Author Profiling - "nesto specificnije"}
+\title{Age, Gender, and Personality Profiling Based on Tweet Analysis}
 
 %VAŽNO: Zakomentirajte sljedeću liniju kada šaljete rad na recenziju
 \name{Lovre Mrčela, Marko Ratković, Ante Žužul}
@@ -55,7 +56,7 @@ Of these four sets, English and Spanish are labeled with age-group, while the It
 In this section, the methods of our approach are thoroughly explained.
 First, the preprocessing of input text is carried out, and weighted vector of trigrams (three consecutive letters) is obtained.
 Then, from preprocessed text some additional feature vectors, which were reasonably expected to be discriminative, are extracted.
-Finally, gender and age-group classification and personality traits regression models are trained on extracted features, and final results are compared for various parameters.
+Finally, gender and age-group classification, and personality traits regression models are trained on extracted features, and final results are compared for various parameters.
 
 \subsection{Text preprocessing}
 
@@ -66,10 +67,10 @@ When that is done, following steps are also applied:
 	\item \textit{urls} to other sites are substituted with an \textsc{url} tag, and usernames (when referenced in replies) are substituted with a \textsc{reply} tag,
 	\item all the text is converted to lower case because we don't deal with capitalization of words, only with words themselves;
 	\item more than 3 repetitions of the same character are reduced to 3 letters, so that the words like \textit{``coooool''} (5 repetitions) and \textit{``coooooool''} (7 repetitions) are both treated as the same word, but distinctly from \textit{``cool''}, because while we want to take repetitions into account, we would like to ignore the quantity of repeated characters (see the Section \ref{sec:features});
-	\item stop words\citep{nltk} for that particular language are deleted from the text, because they are considered insignificant for author profiling.
+	\item stop words \citep{nltk} for that particular language are deleted from the text, because they are considered insignificant for author profiling.
 \end{itemize}
 
-Each three consecutive letters are grouped into trigrams, and weighted vector of trigrams is obtained, using \textit{tf--idf} weighting scheme.
+Each three consecutive letters are grouped into trigrams, and weighted vector of trigrams is obtained, using \textit{tf-idf} weighting scheme.
 The extracted trigram weighted vector is used as one feature.
 More features are then extracted from preprocessed text, as described in the next subsection.
 
@@ -80,10 +81,10 @@ Here is the list of considered additional features, and explanation for each of 
 
 \begin{itemize}
 	\item \textbf{number of emoticons:} the average number of emoticons used in a post (e.g. \verb|:)|, \verb|<3|; not considering each emoticon distinctly but all of them in total),
-	\item \textbf{number of consecutive long repetitions of characters:} as mentioned before, we count only occurrences of repetitions longer than 3 characters, not the length of repetitions themselves -- these repetitions most of the time do not have constant number of characters, even for the same author, or the same post, so it is a better approach to take into account only instances of repetitions;
+	\item \textbf{number of consecutive long repetitions of characters:} as mentioned before, we count only occurrences of repetitions longer than 3 characters, not the length of repetitions themselves - these repetitions most of the time do not have constant number of characters, even for the same author, or the same post, so it is a better approach to take into account only instances of repetitions;
 	\item \textbf{number of replies:} the average number of replies to another user per each post,
 	\item \textbf{number of hashtags:} the average number of hashtags per post,
-	\item \textbf{number of exclamation marks:} the average number of exclamation marks (\verb|!|) per post -- each exclamation marks is counted, as we considered that, opposed to the consecutive repetition of letters, repeated exclamation marks do indicate author's stronger emotion to a some degree.
+	\item \textbf{number of exclamation marks:} the average number of exclamation marks (\verb|!|) per post - each exclamation marks is counted, as we considered that, opposed to the consecutive repetition of letters, repeated exclamation marks do indicate author's stronger emotion to a some degree.
 	\item \textbf{average length and standard deviation of posts:} we were inspecting average post length, as we presume it may also be correlated with age-groups;
 	\item \textbf{average length and standard deviation of words:} as above, but considering just words.
 \end{itemize}
@@ -92,7 +93,7 @@ It was expected for some of the features to be present in a greater degree in so
 The obtained results with respect to each feature are shown in the section \ref{sec:results}.
 
 The final feature set was obtained by selecting \textit{n} best features, where \textit{n} is also hyperparameter that needs to be optimized as well as the model.
-We select \textit{n} best features using the ANOVA F--value\footnote{\url{http://scikit-learn.org/stable/modules/generated/
+We select \textit{n} best features using the ANOVA F-value\footnote{\url{http://scikit-learn.org/stable/modules/generated/
 	sklearn.feature\_selection.SelectKBest.html}}.
 
 \subsection{Gender and age-group classification}
@@ -122,10 +123,14 @@ All of these models are implemented in \textit{sklearn} library, which we are us
 \section{Testing}
 Due to the lack of access to the official testing dataset (because of an ongoing competition), the official training dataset was divided across the authors into a subset for training (70\%) and a subset for testing (30\%). 
 
-From the above mentioned models, optimal model and hyperparameters were selected by using \textit{10--fold} cross--validation on training set.
-Criterion for classifier (which was also used in PAN contest\citep{panoverview}) was accuracy score.
-Aside from accuracy, we also used precision, recall, and F1 measures (micro and macro, for multi--class classification) \citep{panoverviewl}.
-For the regressor, we used the root--mean--square error.
+From the above mentioned models, optimal model and hyperparameters were selected by using \textit{10-fold} cross-validation on training set.
+Criterion for classifier (which was also used in PAN contest \citep{panoverview}) was accuracy score.
+Aside from accuracy, we also used precision, recall, and F1 measures (micro and macro, for multi-class classification) \citep{panoverviewl}.
+For the regressor, we used the \textit{root-mean-square error} considering vectors of traits:
+
+\[\mathrm{RMSE}=\sqrt{\left(\hat{\vect{\theta}} - \vect{\theta}\right)^{T} \left(\hat{\vect{\theta}} - \vect{\theta}\right)} \]
+
+\noindent where $\hat{\vect{\theta}} = \left[\hat{x}_1, \hat{x}_2, \hat{x}_3, \hat{x}_4, \hat{x}_5\right]^{T}$ is a vector of traits obtained by regression, and $\vect{\theta} = \left[x_1, x_2, x_3, x_4, x_5\right]^{T}$ is the given, real vector of traits.
 
 In the absence of official testing dataset, it was obligatory to set baseline score as a referent measure.
 The baseline was set by using dummy models.
@@ -135,19 +140,20 @@ Thus, achieved results can be put into a more real perspective.
 \section{Results}
 \label{sec:results}
 %For the age-group and gender classification, baseline error is represented as score of Naive Bayes Classifier.
-%For the personality traits, we defined baseline error as root--mean--square error of average of all features.
+%For the personality traits, we defined baseline error as root-mean-square error of average of all features.
 
 Further observation of additional features values shows there is a correlation between some features and age-groups and/or gender of the author.
+This can be seen in tables \ref{tab:additionalfeatures-age} (age-groups) and \ref{tab:additionalfeatures-gender} (gender).
 For example, average post length tends to be longer for older users than for younger users, for both the English and Spanish corpora.
 Number of user replies in average is also greater for older users than for younger users, for both languages.
-Average number of hashtags per posts seems to slightly increase towards older users in English corpus, however it is not in linear correspondence with age in Spanish corpus.
+Average number of hashtags per posts seems to slightly increase towards older users in English corpus; however it is not in linear correspondence with age in Spanish corpus.
 
 Also, there is correlation between the average number of emoticons per posts considering the gender of user: in the English, Italian, and Dutch corpora, female users in average tend to use up to three times as many emoticons than male users.
 However, in Spanish corpus the situation is reversed: male users in average tend to use in more emoticons than female users.
-Same goes for number of exclamation marks: female users in all languages use on average more exclamation marks than male users.
+Same goes for number of exclamation marks: female users in all languages use in average more exclamation marks than male users.
 
-Some features seem not to have any correspondence to either age-group or gender, for example the post length deviation.
-We can see those correlations in the tables \ref{tab:additionalfeatures-age} (age-groups) and \ref{tab:additionalfeatures-gender} (gender).
+%Some features seem not to have any correspondence to either age-group or gender, for example the post length deviation.
+%We can see those correlations in the tables \ref{tab:additionalfeatures-age} (age-groups) and \ref{tab:additionalfeatures-gender} (gender).
 
 \begin{table*}
 \caption{Overview of additional features values for each age-group, per language.}
@@ -156,7 +162,7 @@ We can see those correlations in the tables \ref{tab:additionalfeatures-age} (ag
 \begin{tabular}{l|rrrr|rrrr}
 \toprule
 Language & \multicolumn{4}{|c|}{English} & \multicolumn{4}{|c}{Spanish} \\
-Age--group & 18-24 & 25-34 & 35-49 & 50-XX & 18-24 & 25-34 & 35-49 & 50-XX \\
+Age-group & 18-24 & 25-34 & 35-49 & 50-XX & 18-24 & 25-34 & 35-49 & 50-XX \\
 \midrule
 Post length & $ 60.714 $ & $ 85.853 $ & $ 86.680 $ & $ 93.753 $ & $ 75.728 $ & $ 85.246 $ & $ 92.804 $ & $ 101.991 $ \\
 Post length deviation & $ 29.656 $ & $ 29.401 $ & $ 29.532 $ & $ 32.192 $ & $ 31.377 $ & $ 31.234 $ & $ 30.719 $ & $ 29.200 $ \\
@@ -195,20 +201,21 @@ User replies & $ 0.641 $ & $ 0.548 $ & $ 0.745 $ & $ 0.698 $ & $ 0.725 $ & $ 0.5
 \end{center}
 \end{table*}
 
-Precision, recall, F1 micro score, and macro score measures for each language are shown in tables \ref{tab:scores-age} (age-groups), \ref{tab:scores-gender} (gender), and \ref{tab:scores-personality} (personality traits).
+Precision, recall, F1 micro score, and macro score measures for each language are shown in tables \ref{tab:scores-age} (age-groups), \ref{tab:scores-gender} (gender).
+The \textit{root-mean-square error} measure for the personality traits can be seen in table \ref{tab:scores-personality}.
 
 \begin{table*}
-	\caption{Overview of results of age-group classification per language. Baseline scores are given for comparison}
+	\caption{Overview of results of age-group classification per language. Baseline scores are given for comparison. Best results are in bold (the higher, the better).}
 	\label{tab:scores-age}
 	\begin{center}
 		\begin{tabular}{l|rrrrr}
 			\toprule
 			Language & Accuracy & Precision & Recall & F1\textsuperscript{(micro)} & F1\textsuperscript{(macro)} \\
 			\midrule
-			English & $ 0.782 $ & $ 0.717 $ & $ 0.640 $ & $ 0.652 $ & $ 0.782 $ \\
+			English & $ \mathbf{0.782} $ & $ \mathbf{0.717} $ & $ \mathbf{0.640} $ & $ \mathbf{0.652} $ & $ \mathbf{0.782} $ \\
 			English (baseline) &$ 0.326 $ & $ 0.081 $ & $ 0.250 $ & $ 0.122 $ & $ 0.326 $ \\
 			\midrule
-			Spanish & $ 0.933 $ & $ 0.975 $ & $  0.900 $ & $ 0.924 $ & $ 0.933 $ \\
+			Spanish & $ \mathbf{0.933} $ & $ \mathbf{0.975} $ & $ \mathbf{0.900} $ & $ \mathbf{0.924} $ & $ \mathbf{0.933} $ \\
 			Spanish (baseline) & $  0.600 $ & $  0.150 $ & $  0.250 $ & $ 0.187 $ & $  0.600 $ \\
 			\bottomrule
 		\end{tabular}
@@ -216,47 +223,47 @@ Precision, recall, F1 micro score, and macro score measures for each language ar
 \end{table*}
 
 \begin{table*}
-	\caption{Overview of results of gender classification per language. Baseline scores are given for comparison}
+	\caption{Overview of results of gender classification per language. Baseline scores are given for comparison. Best results are in bold (the higher, the better).}
 	\label{tab:scores-gender}
 	\begin{center}
 		\begin{tabular}{l|rrrr}
 			\toprule
 			Language & Accuracy & Precision & Recall & F1 \\
 			\midrule
-			English & $ 0.956 $ & $ 0.888 $ & $ 1.000 $ & $ 0.941 $ \\
+			English & $ \mathbf{0.956} $ & $ \mathbf{0.888} $ & $ \mathbf{1.000} $ & $ \mathbf{0.941} $ \\
 			English (baseline) & $ 0.347 $ & $ 0.347 $ & $ 1.000 $ & $ 0.516 $ \\
 			\midrule
-			Spanish & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
-			Spanish (baseline) & $ 0.400 $ & $ 0.400 $ & $ 1.000 $ & $ 0.571 $ \\
+			Spanish & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ \\
+			Spanish (baseline) & $ 0.400 $ & $ 0.400 $ & $ \mathbf{1.000} $ & $ 0.571 $ \\
 			\midrule
-			Italian & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
+			Italian & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ \\
 			Italian (baseline) & $ 0.416 $ & $ 0.000 $ & $ 0.000 $ & $ 0.000 $ \\
 			\midrule
-			Dutch & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ & $ 1.000 $ \\
-			Dutch (baseline) & $ 0.454 $ & $ 0.454 $ & $ 1.000 $ & $ 0.625 $ \\
+			Dutch & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ & $ \mathbf{1.000} $ \\
+			Dutch (baseline) & $ 0.454 $ & $ 0.454 $ & $ \mathbf{1.000} $ & $ 0.625 $ \\
 			\bottomrule
 		\end{tabular}
 	\end{center}
 \end{table*}
 
 \begin{table*}
-	\caption{Overview of RMSE of personality traits regression per language. Baseline scores are given for comparison}
+	\caption{Overview of RMSE of personality traits regression per language. Baseline scores are given for comparison. Best results are in bold (the lower, the better).}
 	\label{tab:scores-personality}
 	\begin{center}
 		\begin{tabular}{l|rrrrr}
 			\toprule
 			Language & Extraversion & Stability & Agreeableness & Conscient\-iousness & Openness \\
 			\midrule
-			English & $ 0.122 $ & $ 0.179 $ & $ 0.153 $ & $ 0.140 $ & $ 0.130 $ \\
+			English & $ \mathbf{0.122} $ & $ \mathbf{0.179} $ & $ \mathbf{0.153} $ & $ \mathbf{0.140} $ & $ \mathbf{0.130} $ \\
 			English (baseline) & $ 0.164 $ & $ 0.235 $ & $ 0.182 $ & $ 0.167 $ & $ 0.155 $ \\
 			\midrule
-			Spanish & $ 0.080 $ & $ 0.143 $ & $ 0.103 $ & $ 0.155 $ & $ 0.131 $ \\
+			Spanish & $ \mathbf{0.080} $ & $ \mathbf{0.143} $ & $ \mathbf{0.103} $ & $ \mathbf{0.155} $ & $ \mathbf{0.131} $ \\
 			Spanish (baseline) & $ 0.123 $ & $ 0.220 $ & $ 0.149 $ & $ 0.211 $ & $ 0.183 $ \\
 			\midrule
-			Italian & $ 0.048 $ & $ 0.123 $ & $ 0.067 $ & $ 0.086 $ & $ 0.099 $ \\
+			Italian & $ \mathbf{0.048} $ & $ \mathbf{0.123} $ & $ \mathbf{0.067} $ & $ \mathbf{0.086} $ & $ \mathbf{0.099} $ \\
 			Italian (baseline) & $ 0.136 $ & $ 0.166 $ & $ 0.116 $ & $ 0.162 $ & $ 0.162 $ \\
 			\midrule
-			Dutch & $ 0.087 $ & $ 0.112 $ & $ 0.129 $ & $ 0.064 $ & $ 0.041 $ \\
+			Dutch & $ \mathbf{0.087} $ & $ \mathbf{0.112} $ & $ \mathbf{0.129} $ & $ \mathbf{0.064} $ & $ \mathbf{0.041} $ \\
 			Dutch (baseline) & $ 0.137 $ & $ 0.197 $ & $ 0.155 $ & $ 0.115 $ & $ 0.116 $ \\
 			\bottomrule
 		\end{tabular}
@@ -293,7 +300,7 @@ The possible upgrade of this work would be researching approach of Latent Semant
 %
 %\subsubsection{Narrow tables}
 %
-%%An example of the narrows table is the Table~\ref{tab:narrow-table}. Do not use vertical lines in tables -- vertical tables have no effect and they make tables visually less attractive.
+%%An example of the narrows table is the Table~\ref{tab:narrow-table}. Do not use vertical lines in tables - vertical tables have no effect and they make tables visually less attractive.
 %
 %\begin{table}
 %\caption{Comparison of results obtained by using different classifiers.}
@@ -400,8 +407,9 @@ The possible upgrade of this work would be researching approach of Latent Semant
 %
 %\section{Conclusion}
 %
-%Conclusion is the last enumerated section of the paper. Conclusion should not exceed half of the column and is typically be split into 2--3 paragraphs.
-\pagebreak
+%Conclusion is the last enumerated section of the paper. Conclusion should not exceed half of the column and is typically be split into 2-3 paragraphs.
+\newpage
+%\pagebreak
 \bibliographystyle{tar2014}
 \bibliography{tar2014} 
 
