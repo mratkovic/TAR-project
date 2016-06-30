@@ -126,11 +126,11 @@ Due to the lack of access to the official testing dataset (because of an ongoing
 From the above mentioned models, optimal model and hyperparameters were selected by using \textit{10-fold} cross-validation on training set.
 Criterion for classifier (which was also used in PAN contest \citep{panoverview}) was accuracy score.
 Aside from accuracy, we also used precision, recall, and F1 measures (micro and macro, for multi-class classification) \citep{panoverviewl}.
-For the regressor, we used the \textit{root-mean-square error} considering vectors of traits:
+For the regressor, we used the \textit{root-mean-square error} for each of five traits individually:
 
-\[\mathrm{RMSE}=\sqrt{\left(\hat{\vect{\theta}} - \vect{\theta}\right)^{T} \left(\hat{\vect{\theta}} - \vect{\theta}\right)} \]
+\[\mathrm{RMSE}_i=\frac{\sum_{k = 1}^{N}\sqrt{\hat{\theta}_{k}^{(i)} - \theta_{k}^{(i)}}}{N},\]
 
-\noindent where $\hat{\vect{\theta}} = \left[\hat{x}_1, \hat{x}_2, \hat{x}_3, \hat{x}_4, \hat{x}_5\right]^{T}$ is a vector of traits obtained by regression, and $\vect{\theta} = \left[x_1, x_2, x_3, x_4, x_5\right]^{T}$ is the given, real vector of traits.
+\noindent where $\hat{\theta}_k^{(i)}$ is a degree of $i$-th trait for $k$-th user estimated by our model, similarly $\theta_k^{(i)}$ is the given, real degree, and $N$ is the number of users (of course, only users from the test set are taken into account when measuring the error).
 
 In the absence of official testing dataset, it was obligatory to set baseline score as a referent measure.
 The baseline was set by using dummy models.
