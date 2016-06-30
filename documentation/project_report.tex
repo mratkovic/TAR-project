@@ -128,7 +128,7 @@ Criterion for classifier (which was also used in PAN contest \citep{panoverview}
 Aside from accuracy, we also used precision, recall, and F1 measures (micro and macro, for multi-class classification) \citep{panoverviewl}.
 For the regressor, we used the \textit{root-mean-square error} for each of five traits individually:
 
-\[\mathrm{RMSE}_i=\frac{\sum_{k = 1}^{N}\sqrt{\hat{\theta}_{k}^{(i)} - \theta_{k}^{(i)}}}{N},\]
+\[\mathrm{RMSE}_i=\sqrt{\frac{\sum_{k = 1}^{N}\left(\hat{\theta}_{k}^{(i)} - \theta_{k}^{(i)}\right)^2}{N}},\]
 
 \noindent where $\hat{\theta}_k^{(i)}$ is a degree of $i$-th trait for $k$-th user estimated by our model, similarly $\theta_k^{(i)}$ is the given, real degree, and $N$ is the number of users (of course, only users from the test set are taken into account when measuring the error).
 
